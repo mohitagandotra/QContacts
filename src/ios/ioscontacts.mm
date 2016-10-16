@@ -1,5 +1,4 @@
-#include "ioscontacthandler.h"
-//#include "ios/ioscontacts.h"
+#include "ioscontacts.h"
 #include <QString>
 #import <Foundation/NSArray.h>
 #import <Foundation/NSObject.h>
@@ -8,9 +7,9 @@
 
 @interface ContactsScan:NSObject
 {
-    QSIP::IosContactHandler *m_handler;
+    QSIP::IosContacts *m_handler;
 }
-- (ContactsScan*) init: (QSIP::IosContactHandler *)handler;
+- (ContactsScan*) init: (QSIP::IosContacts *)handler;
 - (void) contactScan;
 - (void) getAllContact;
 - (void) parseContactWithContact :(CNContact* )contact;
@@ -21,7 +20,7 @@
 @implementation ContactsScan
 
 
-- (ContactsScan*) init: (QSIP::IosContactHandler*)handler
+- (ContactsScan*) init: (QSIP::IosContacts*)handler
 {
     m_handler = handler;
     return self;
@@ -116,7 +115,8 @@ namespace QSIP {
  *
  *  \param[in] parent : Parent object instance.
  ******************************************************************************/
-IosContactHandler::IosContactHandler(QObject *parent)
+IosContacts::IosContacts(QObject *parent):
+    QObject(parent)
 {
 
 }
@@ -126,7 +126,7 @@ IosContactHandler::IosContactHandler(QObject *parent)
  *
  *  \author Mohita Gandotra.
  ******************************************************************************/
-void IosContactHandler::fetchContacts()
+void IosContacts::fetchContacts()
 {
     ContactsScan *scanner = [[ContactsScan alloc] init:this];
     [scanner contactScan];

@@ -23,8 +23,8 @@
  * met: http://www.gnu.org/copyleft/gpl.html.
  *
  ******************************************************************************/
-#ifndef IOSCONTACTHANDLER_H
-#define IOSCONTACTHANDLER_H
+#ifndef IOSCONTACTS_H
+#define IOSCONTACTS_H
 
 #include <QObject>
 #include "types.h"
@@ -36,11 +36,11 @@ namespace QSIP {
  *
  *  \author Mohita Gandotra
  ******************************************************************************/
-class IosContactHandler : public QObject
+class IosContacts : public QObject
 {
     Q_OBJECT
 public:
-    IosContactHandler(QObject* parent=nullptr);
+    IosContacts(QObject* parent=nullptr);
 
     void fetchContacts();
 
@@ -50,4 +50,4 @@ signals:
 };
 
 } // namespace QSIP
-#endif // IOSCONTACTHANDLER_H
+#endif // IOSCONTACTS_H

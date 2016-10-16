@@ -34,7 +34,7 @@
 #endif
 
 #ifdef Q_OS_IOS
-#include "ios/ioscontacthandler.h"
+#include "ios/ioscontacts.h"
 #endif
 
 namespace QSIP {
@@ -115,8 +115,8 @@ void ContactsEnumerator::fetchContacts()
         return;
     }
     m_model->clear();
-    IosContactHandler handler;
-    connect(&handler, &IosContactHandler::newContact,[this](QString id, QString name, QSIP::PhoneNumbers phNos) {
+    IosContacts handler;
+    connect(&handler, &IosContacts::newContact,[this](QString id, QString name, QSIP::PhoneNumbers phNos) {
         m_model->addContact(id, name, phNos);
     });
     handler.fetchContacts();
