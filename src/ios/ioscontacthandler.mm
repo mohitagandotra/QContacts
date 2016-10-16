@@ -81,14 +81,14 @@
         }
     }
     //NSString * phone = [[contact.phoneNumbers valueForKey:@"value"] valueForKey:@"digits"];
-    NSString * email = [contact.emailAddresses valueForKey:@"value"];
-    NSArray * addrArr = [self parseAddressWithContac:contact];
+    //NSString * email = [contact.emailAddresses valueForKey:@"value"];
+    //NSArray * addrArr = [self parseAddressWithContac:contact];
 
     QString name = QString("%1 %2")
             .arg(QString::fromNSString(firstName))
             .arg(QString::fromNSString(lastName));
-    m_handler->addNewContact(QString::fromNSString(identifier), name, phoneNumbers);
-    //handler->onNewContact(QString::fromNSString(firstName) + " " + phoneNumber);
+    // Emit contact data to recieve it on the Qt thread.
+    m_handler->newContact(QString::fromNSString(identifier), name, phoneNumbers);
 }
 
 - (NSMutableArray *)parseAddressWithContac: (CNContact *)contact
@@ -109,27 +109,28 @@
 
 namespace QSIP {
 
-IosContactHandler::IosContactHandler()
+//******************************************************************************
+/*! \brief Constructor
+ *
+ *  \author Mohita Gandotra.
+ *
+ *  \param[in] parent : Parent object instance.
+ ******************************************************************************/
+IosContactHandler::IosContactHandler(QObject *parent)
 {
 
 }
 
-IosContactHandler::~IosContactHandler()
-{
-
-}
-
+//******************************************************************************
+/*! \brief Fetch contacts from iOS.
+ *
+ *  \author Mohita Gandotra.
+ ******************************************************************************/
 void IosContactHandler::fetchContacts()
 {
     ContactsScan *scanner = [[ContactsScan alloc] init:this];
     [scanner contactScan];
     [scanner release];
-}
-
-void IosContactHandler::addNewContact(QString id, QString name, QSIP::PhoneNumbers phNos)
-{
-    // Emit contact data to recieve it on the Qt thread.
-    emit newContact(id, name, phNos);
 }
 
 } // namespace QSIP
