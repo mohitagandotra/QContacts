@@ -1,7 +1,31 @@
+//******************************************************************************
+/*! \file
+ *
+ *  \author Mohita Gandotra
+ *
+ *  \copyright Copyright (C) 2016 Mohita Gandotra.
+ * Contact: mohitagandotra@gmail.com
+ *
+ *  \copyright GNU Lesser General Public License Usage
+ * This file may be used under the terms of the GNU Lesser
+ * General Public License version 2.1 as published by the Free Software
+ * Foundation and appearing in the file LICENSE.LGPL included in the
+ * packaging of this file.  Please review the following information to
+ * ensure the GNU Lesser General Public License version 2.1 requirements
+ * will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+ *
+ *  \copyright GNU General Public License Usage
+ * Alternatively, this file may be used under the terms of the GNU
+ * General Public License version 3.0 as published by the Free Software
+ * Foundation and appearing in the file LICENSE.GPL included in the
+ * packaging of this file.  Please review the following information to
+ * ensure the GNU General Public License version 3.0 requirements will be
+ * met: http://www.gnu.org/copyleft/gpl.html.
+ *
+ ******************************************************************************/
 #include "contactsenumerator.h"
 #include "types.h"
 #include "contactsmodel.h"
-#include <QDebug>
 
 #ifdef Q_OS_ANDROID
 #include <QAndroidJniObject>
@@ -15,15 +39,39 @@
 
 namespace QSIP {
 
+//******************************************************************************
+/*! \brief Constructor
+ *
+ *  \author Mohita Gandotra.
+ *
+ *  \param[in] model : Contacts model instance.
+ *  \param[in] parent : Parent object instance.
+ *
+ *  \see \ref QSIP::ContactsModel
+ ******************************************************************************/
 ContactsEnumerator::ContactsEnumerator(ContactsModel* model, QObject *parent) :
     QObject(parent),
     m_model(model)
 {
+    Q_ASSERT(m_model);
+    connect(model, &QObject::destroyed, [this]() { m_model = nullptr;});
 }
 
 #ifdef Q_OS_ANDROID
+//******************************************************************************
+/*! \brief Fetches contacts from the underlying OS and adds it to  the Contacts model,
+ *
+ *  \details The method blocks untill all contacts are fetched and populated
+ *
+ *  \author Mohita Gandotra.
+ *
+ *  \see \ref QSIP::ContactsModel
+ ******************************************************************************/
 void ContactsEnumerator::fetchContacts()
 {
+    if(!m_model) {
+        return;
+    }
     m_model->clear();
     QAndroidJniObject contacts = QtAndroid::androidActivity().callObjectMethod("readContacts","()[Ljava/lang/String;");
     QAndroidJniEnvironment env;
@@ -52,8 +100,20 @@ void ContactsEnumerator::fetchContacts()
     }
 }
 #elif defined Q_OS_IOS
+//******************************************************************************
+/*! \brief Fetches contacts from the underlying OS and adds it to  the Contacts model,
+ *
+ *  \details The method blocks untill all contacts are fetched and populated
+ *
+ *  \author Mohita Gandotra.
+ *
+ *  \see \ref QSIP::ContactsModel
+ ******************************************************************************/
 void ContactsEnumerator::fetchContacts()
 {
+    if(!m_model) {
+        return;
+    }
     m_model->clear();
     IosContactHandler handler;
     connect(&handler, &IosContactHandler::newContact,[this](QString id, QString name, QSIP::PhoneNumbers phNos) {
@@ -62,8 +122,20 @@ void ContactsEnumerator::fetchContacts()
     handler.fetchContacts();
 }
 #else
+//******************************************************************************
+/*! \brief Fetches contacts from the underlying OS and adds it to  the Contacts model,
+ *
+ *  \details The method blocks untill all contacts are fetched and populated
+ *
+ *  \author Mohita Gandotra.
+ *
+ *  \see \ref QSIP::ContactsModel
+ ******************************************************************************/
 void ContactsEnumerator::fetchContacts()
 {
+    if(!m_model) {
+        return;
+    }
     m_model->clear();
     PhoneNumbers testNos;
     testNos.append({"Mobile", "+34 67774888"});
