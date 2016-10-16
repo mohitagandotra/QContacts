@@ -34,11 +34,9 @@ HEADERS += \
 
 ios {
 HEADERS += \
-    ios/ioscontacthandler.h \
-    ios/ioscontacts.h
+    ios/ioscontacthandler.h
 
 OBJECTIVE_SOURCES += \
-    ios/ioscontacts.mm \
     ios/ioscontacthandler.mm
 
 LIBS += -framework CoreFoundation -framework Contacts
