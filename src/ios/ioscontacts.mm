@@ -35,7 +35,7 @@
          {
              CNContactStore * contactStore = [[CNContactStore alloc] init];
              [contactStore requestAccessForEntityType:entityType completionHandler:^(BOOL granted, NSError * _Nullable error) {
-                 if(granted){
+                 if (granted == YES){
                      [self getAllContact];
                  }
              }];
@@ -60,6 +60,9 @@
         BOOL success = [addressBook enumerateContactsWithFetchRequest:request error:&contactError usingBlock:^(CNContact * __nonnull contact, BOOL * __nonnull stop){
             [self parseContactWithContact:contact];
         }];
+        if (contactError) {
+            NSLog(@"error fetching contacts %@", contactError);
+        }
     }
 }
 
@@ -108,6 +111,20 @@
 
 namespace QSIP {
 
+class IosContactsPrivate
+{
+private:
+     IosContactsPrivate(IosContacts* parentInstance);
+    ~IosContactsPrivate();
+
+     void fetchContacts();
+
+private:
+     IosContacts* parent;
+     ContactsScan *scanner;
+     friend class IosContacts;
+};
+
 //******************************************************************************
 /*! \brief Constructor
  *
@@ -118,7 +135,12 @@ namespace QSIP {
 IosContacts::IosContacts(QObject *parent):
     QObject(parent)
 {
+    d = new IosContactsPrivate(this);
+}
 
+IosContacts::~IosContacts()
+{
+    delete d;
 }
 
 //******************************************************************************
@@ -128,9 +150,23 @@ IosContacts::IosContacts(QObject *parent):
  ******************************************************************************/
 void IosContacts::fetchContacts()
 {
-    ContactsScan *scanner = [[ContactsScan alloc] init:this];
-    [scanner contactScan];
+    d->fetchContacts();
+}
+
+IosContactsPrivate::IosContactsPrivate(IosContacts *parentInstance):
+    parent(parentInstance)
+{
+    scanner = [[ContactsScan alloc] init:parent];
+}
+
+IosContactsPrivate::~IosContactsPrivate()
+{
     [scanner release];
+}
+
+void IosContactsPrivate::fetchContacts()
+{
+    [scanner contactScan];
 }
 
 } // namespace QSIP

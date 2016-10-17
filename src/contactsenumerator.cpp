@@ -55,6 +55,13 @@ ContactsEnumerator::ContactsEnumerator(ContactsModel* model, QObject *parent) :
 {
     Q_ASSERT(m_model);
     connect(model, &QObject::destroyed, [this]() { m_model = nullptr;});
+
+#ifdef Q_OS_IOS
+    m_iosContacts = new IosContacts(this);
+    connect(m_iosContacts, &IosContacts::newContact,[this](QString id, QString name, PhoneNumbers phNos) {
+        m_model->addContact(id, name, phNos);
+    });
+#endif
 }
 
 #ifdef Q_OS_ANDROID
@@ -114,12 +121,9 @@ void ContactsEnumerator::fetchContacts()
     if(!m_model) {
         return;
     }
+    Q_ASSERT(m_iosContacts);
     m_model->clear();
-    IosContacts handler;
-    connect(&handler, &IosContacts::newContact,[this](QString id, QString name, QSIP::PhoneNumbers phNos) {
-        m_model->addContact(id, name, phNos);
-    });
-    handler.fetchContacts();
+    m_iosContacts->fetchContacts();
 }
 #else
 //******************************************************************************

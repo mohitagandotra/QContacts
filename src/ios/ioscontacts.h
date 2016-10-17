@@ -29,7 +29,10 @@
 #include <QObject>
 #include "types.h"
 
+
 namespace QSIP {
+
+class IosContactsPrivate;
 
 //******************************************************************************
 /*! \brief Helper class to getch contacts from iOS.
@@ -41,12 +44,16 @@ class IosContacts : public QObject
     Q_OBJECT
 public:
     IosContacts(QObject* parent=nullptr);
+    ~IosContacts();
 
     void fetchContacts();
 
 signals:
     // Emitted for every new contact.
     void newContact(QString id, QString name, QSIP::PhoneNumbers);
+
+private:
+    IosContactsPrivate *d = nullptr;
 };
 
 } // namespace QSIP

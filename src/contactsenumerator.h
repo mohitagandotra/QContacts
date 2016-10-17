@@ -31,6 +31,7 @@
 namespace QSIP {
 // Forward declerations
 class ContactsModel;
+class IosContacts;
 
 //******************************************************************************
 /*! \brief Helper class to fetch contacts from underlying OS.
@@ -49,6 +50,10 @@ public slots:
 
 private:
     ContactsModel* m_model;
+#ifdef Q_OS_IOS
+    IosContacts *m_iosContacts;
+#endif
+
 };
 
 } // namespace QSIP
