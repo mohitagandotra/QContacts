@@ -58,9 +58,8 @@ ContactsEnumerator::ContactsEnumerator(ContactsModel* model, QObject *parent) :
 
 #ifdef Q_OS_IOS
     m_iosContacts = new IosContacts(this);
-    connect(m_iosContacts, &IosContacts::newContact,[this](QString id, QString name, PhoneNumbers phNos) {
-        m_model->addContact(id, name, phNos);
-    });
+    connect(m_iosContacts, &IosContacts::newContact, m_model,
+            &ContactsModel::addContact, Qt::QueuedConnection);
 #endif
 }
 
